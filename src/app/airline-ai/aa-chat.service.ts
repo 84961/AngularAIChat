@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({ providedIn: 'root' })
 export class AAChatService {
@@ -22,14 +22,19 @@ export class AAChatService {
   sendMessage(message: string): Observable<any> {
     this.chatHistory.update(history => [...history, { role: 'user', content: message }]);
 
-    const headers = { 
-      'Content-Type': 'application/json', 
-      'Authorization': `Bearer ${this.apiKey}` 
-    };
+
+    // below is how we need to pass for github marketplace model
+        //const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` };
+        
+        // below is how we need to pass for azure open ai
+        const headers = new HttpHeaders({
+          'api-key': this.apiKey,
+          'Content-Type': 'application/json'
+        });
 
     const body = {
       messages: this.chatHistory(),
-      model: 'gpt-4o-mini',
+      //model: 'gpt-4o-mini',  // for github marketplace  need to pass the model name
       tools: [
         {
           type: "function",
@@ -87,14 +92,18 @@ export class AAChatService {
   }
 
   private sendUpdatedMessages(observer: any) {
-    const headers = { 
-      'Content-Type': 'application/json', 
-      'Authorization': `Bearer ${this.apiKey}` 
-    };
+     // below is how we need to pass for github marketplace model
+        //const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` };
+        
+        // below is how we need to pass for azure open ai
+        const headers = new HttpHeaders({
+          'api-key': this.apiKey,
+          'Content-Type': 'application/json'
+        });
 
     const body = {
       messages: this.chatHistory(),
-      model: 'gpt-4o-mini'
+      //model: 'gpt-4o-mini' // required only for github model not for azure open ai
     };
 
     this.http.post<any>(this.apiUrl, body, { headers }).subscribe(finalResponse => {
