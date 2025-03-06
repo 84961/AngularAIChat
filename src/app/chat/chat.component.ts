@@ -13,7 +13,11 @@ import { ChatService } from './chat.service';
 export class ChatComponent {
   userInput = '';
   chatService = inject(ChatService);
-  messages = this.chatService.getChatHistory();
+  messages = computed(() => {
+    const history = this.chatService.getChatHistory()();
+    return history.length > 1 ? history.slice(1) : [];
+  });
+  
 
   constructor() {
     effect(() => {
