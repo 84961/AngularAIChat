@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class WhisperService {
-    private apiUrl:string = `${environment.backendEndpoint}/api/SpeechToText/transcribe`;
+    private apiUrl:string = `${environment.backendEndpoint}/api/SpeechToText/transcribe-azure`;
     http = inject(HttpClient);
   
     constructor() {}
