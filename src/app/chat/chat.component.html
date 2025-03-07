@@ -1,12 +1,15 @@
 <div class="chat-container">
+    <div class="chat-header">
+      <a routerLink="/home" class="back-button">← Home</a>
+        <h1>AI Chat</h1>
+        <p class="subtext">Your helpful, witty AI assistant ready to answer any queries!</p>
+    </div>
     <div class="messages">
-    
         @for(message of messages(); track $index) {
         <div [ngClass]="{'user': message.role === 'user', 'bot': message.role === 'system'}">
           {{ message.content }}
         </div>
-    }
-    
+        }
     </div>
     <div class="input-container">
       <input 
@@ -17,4 +20,4 @@
       />
       <button (click)="sendMessage()">Send</button>
     </div>
-  </div>
+</div>

@@ -2,12 +2,35 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {HeadersType, BodyType } from '../common/types';
 
 @Injectable({ providedIn: 'root' })
 export class AAChatService {
-  private apiUrl = environment.apiUrl;
-  private apiKey = environment.apiKey;
+  private useAzureOpenAI = environment.useAzureOpenAI;
+  private apiUrl = this.useAzureOpenAI ? environment.apiUrl : environment.githubapiUrl;
+  private apiKey = this.useAzureOpenAI ? environment.apiKey : environment.githubapiKey;
+  
   http = inject(HttpClient);
+
+  private readonly ticketPriceTool = {
+    tools: [
+      {
+        type: "function",
+        function: {
+          name: "get_ticket_price",
+          description: "Fetch the flight ticket price to a destination city",
+          parameters: {
+            type: "object",
+            properties: {
+              destination_city: { type: "string", description: "The destination city" }
+            },
+            required: ["destination_city"]
+          }
+        }
+      }
+    ],
+    tool_choice: "auto"
+  } as const;
 
   private chatHistory = signal<{ role: string; content: string }[]>([
     { role: 'system', content: 
@@ -18,24 +41,24 @@ export class AAChatService {
   ]);
 
   constructor() {}
+  private getHeaders(): HttpHeaders | HeadersType {
+    const headers = this.useAzureOpenAI
+      ? new HttpHeaders({
+        'api-key': this.apiKey,
+        'Content-Type': 'application/json'
+      })
+      : { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` } as HeadersType;
+
+    return headers;
+  }
 
   sendMessage(message: string): Observable<any> {
     this.chatHistory.update(history => [...history, { role: 'user', content: message }]);
 
 
-    // below is how we need to pass for github marketplace model
-        //const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` };
-        
-        // below is how we need to pass for azure open ai
-        const headers = new HttpHeaders({
-          'api-key': this.apiKey,
-          'Content-Type': 'application/json'
-        });
-
-    const body = {
-      messages: this.chatHistory(),
-      //model: 'gpt-4o-mini',  // for github marketplace  need to pass the model name
-      tools: [
+    const body: BodyType = this.useAzureOpenAI 
+      ? { messages: this.chatHistory(),
+        tools: [
         {
           type: "function",
           function: {
@@ -51,11 +74,28 @@ export class AAChatService {
           }
         }
       ],
-      tool_choice: "auto"
-    };
+      tool_choice: "auto" }
+      : { messages: this.chatHistory(), model: 'gpt-4o-mini',tools: [
+        {
+          type: "function",
+          function: {
+            name: "get_ticket_price",
+            description: "Fetch the flight ticket price to a destination city",
+            parameters: {
+              type: "object",
+              properties: {
+                destination_city: { type: "string", description: "The destination city" }
+              },
+              required: ["destination_city"]
+            }
+          }
+        }
+      ],
+      tool_choice: "auto" };
 
+    
     return new Observable(observer => {
-      this.http.post<any>(this.apiUrl, body, { headers }).subscribe(response => {
+      this.http.post<any>(this.apiUrl, body, { headers: this.getHeaders() }).subscribe(response => {
         const firstChoice = response?.choices?.[0];
 
         if (firstChoice?.finish_reason === "tool_calls") {
@@ -92,21 +132,11 @@ export class AAChatService {
   }
 
   private sendUpdatedMessages(observer: any) {
-     // below is how we need to pass for github marketplace model
-        //const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` };
-        
-        // below is how we need to pass for azure open ai
-        const headers = new HttpHeaders({
-          'api-key': this.apiKey,
-          'Content-Type': 'application/json'
-        });
+   const body: BodyType = this.useAzureOpenAI 
+         ? { messages: this.chatHistory() }
+         : { messages: this.chatHistory(), model: 'gpt-4o-mini' };
 
-    const body = {
-      messages: this.chatHistory(),
-      //model: 'gpt-4o-mini' // required only for github model not for azure open ai
-    };
-
-    this.http.post<any>(this.apiUrl, body, { headers }).subscribe(finalResponse => {
+    this.http.post<any>(this.apiUrl, body, { headers: this.getHeaders() }).subscribe(finalResponse => {
       this.handleResponse(finalResponse, observer);
     }, error => observer.error(error));
   }

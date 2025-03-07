@@ -2,12 +2,12 @@ import { Component, computed, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AAChatService } from './aa-chat.service';
-
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'aa-app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterModule],
   templateUrl: './aa-chat.component.html',
   styleUrls: ['./aa-chat.component.scss']
 })

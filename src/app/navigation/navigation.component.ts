@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-navigation',
   standalone: true,
   imports: [RouterOutlet, RouterModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  templateUrl: './navigation.component.html',
+  styleUrl: './navigation.component.scss'
 })
-export class AppComponent {
-  title = 'angular-ai-playground';
+export class NavigationComponent {
+  title = 'angular-chat-bot';
 }

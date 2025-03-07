@@ -1,4 +1,10 @@
 <div class="chat-container">
+  <div class="chat-header">
+    <a routerLink="/home" class="back-button">← Home</a>
+    <h1>Airline Assistant</h1>
+    <p class="subtext">Your Airline assistant who can tell ticket prices for Tokyo,Paris,Berlin and London!</p>
+</div>
+
     <div class="messages">
     
         @for(message of messages(); track $index) {
