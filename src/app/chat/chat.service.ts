@@ -15,7 +15,7 @@ export class ChatService {
   http = inject(HttpClient);
 
   private chatHistory = signal<{ role: string; content: string }[]>([
-    { role: 'system', content: 'You are a helpful witty assistant who gives back responses with a touch of humour' }
+    { role: 'system', content: 'You are a helpful witty assistant who gives back responses with a touch of humour respond back in markdown' }
   ]);
 
   constructor() {}

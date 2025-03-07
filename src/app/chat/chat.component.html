@@ -5,11 +5,11 @@
         <p class="subtext">Your helpful, witty AI assistant ready to answer any queries!</p>
     </div>
     <div class="messages">
-        @for(message of messages(); track $index) {
-        <div [ngClass]="{'user': message.role === 'user', 'bot': message.role === 'system'}">
-          {{ message.content }}
-        </div>
-        }
+      @for(message of messages(); track $index) {
+      <div [ngClass]="{'user': message.role === 'user', 'bot': message.role === 'system'}"
+           [innerHTML]="parseMarkdown(message.content)">
+      </div>
+      }
     </div>
     <div class="input-container">
       <input 
