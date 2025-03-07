@@ -1,0 +1,31 @@
+<div class="whisper-container">
+    <div class="whisper-header">
+        <a routerLink="/home" class="back-button">← Home</a>
+        <h1>Hugging Face Whisper</h1>
+        <p class="subtext">Upload any audio file and get it transcribed instantly!</p>
+    </div>
+    
+    <div class="upload-section">
+       <!--  <input type="file" 
+               (change)="onFileSelected($event)" 
+               accept="audio/*" 
+               class="file-input" 
+               [disabled]="isLoading" /> -->
+               <input type="file" 
+       (change)="onFileSelected($event)" 
+       accept=".mp3,.wav,.flac" 
+       class="file-input" 
+       [disabled]="isLoading" />
+        <button (click)="transcribe()" 
+                [disabled]="!audioFile || isLoading" 
+                class="transcribe-button">
+            {{ isLoading ? 'Transcribing...' : 'Transcribe' }}
+        </button>
+    </div>
+
+    <div *ngIf="error" class="transcription-result-error">
+        {{ error }}
+    </div>
+
+    <p *ngIf="transcription" class="transcription-result">{{ transcription }}</p>
+</div>
