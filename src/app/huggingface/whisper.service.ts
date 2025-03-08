@@ -2,6 +2,7 @@ import { inject,Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environment';
 import { Observable } from 'rxjs';
+import { UserContentRequest } from '../common/models';
 
 @Injectable({
   providedIn: 'root',
@@ -25,5 +26,14 @@ export class WhisperService {
           'Accept': '*/*'
         }
       });
+    }
+
+    createMOMFromUserContent(request: UserContentRequest): Observable<any> {
+      const url = `${environment.backendEndpoint}/api/SpeechToText/huggingface-llama-mom`;
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+    
+      return this.http.post<any>(url, request, { headers });
     }
   }

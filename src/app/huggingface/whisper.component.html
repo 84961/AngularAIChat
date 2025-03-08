@@ -4,21 +4,11 @@
         <h1>Whisper</h1>
         <p class="subtext">Upload any audio file and get it transcribed instantly!</p>
     </div>
-    
+
     <div class="upload-section">
-       <!--  <input type="file" 
-               (change)="onFileSelected($event)" 
-               accept="audio/*" 
-               class="file-input" 
-               [disabled]="isLoading" /> -->
-               <input type="file" 
-       (change)="onFileSelected($event)" 
-       accept=".mp3,.wav,.flac" 
-       class="file-input" 
-       [disabled]="isLoading" />
-        <button (click)="transcribe()" 
-                [disabled]="!audioFile || isLoading" 
-                class="transcribe-button">
+        <input type="file" (change)="onFileSelected($event)" accept=".mp3,.wav,.flac" class="file-input"
+            [disabled]="isLoading" />
+        <button (click)="transcribe()" [disabled]="!audioFile || isLoading" class="transcribe-button">
             {{ isLoading ? 'Transcribing...' : 'Transcribe' }}
         </button>
     </div>
@@ -27,5 +17,17 @@
         {{ error }}
     </div>
 
-    <p *ngIf="transcription" class="transcription-result">{{ transcription }}</p>
+    <div *ngIf="transcription" class="transcription-result">
+        <div>{{ transcription }}</div>
+        <button (click)="createMOM(transcription)" 
+                [disabled]="isCreatingMom" 
+                class="transcribe-button-secondary">
+            <span *ngIf="!isCreatingMom">Create Mom</span>
+            <span *ngIf="isCreatingMom">
+                Creating MOM Please wait...
+            </span>
+        </button>
+    </div>
+    <div *ngIf="trsanscribedMom" class="message user" [innerHTML]="parseMarkdown(trsanscribedMom)">
+    </div>
 </div>

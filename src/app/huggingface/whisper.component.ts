@@ -4,7 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { inject } from '@angular/core';
-
+import { UserContentRequest } from '../common/models';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { marked } from 'marked';
 @Component({
   selector: 'app-whisper',
   standalone: true,
@@ -18,7 +20,15 @@ export class WhisperComponent {
   isLoading: boolean = false;
   error: string | null = null;
   whisperService = inject(WhisperService);
+  trsanscribedMom:string = '';
+  sanitizer = inject(DomSanitizer);
+  isCreatingMom = false;
 
+  parseMarkdown(content: string): SafeHtml {
+    const html = marked.parse(content) as string; // Ensure the result is a string
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+  
   onFileSelected(event: any) {
     const file = event.target.files[0];
 
@@ -40,6 +50,22 @@ export class WhisperComponent {
     this.audioFile = file;
     this.error = null;
     console.log('File selected:', file.name, 'Type:', file.type, 'Size:', file.size);
+  }
+
+  async createMOM(transcription: string) {
+    this.isCreatingMom = true;
+    const request: UserContentRequest = { userContent: transcription };
+    
+    this.whisperService.createMOMFromUserContent(request).subscribe({
+        next: (response) => {
+            this.trsanscribedMom = response.text;
+            this.isCreatingMom = false;
+        },
+        error: (error) => {
+            console.error('Error creating MOM:', error);
+            this.isCreatingMom = false;
+        }
+    });
   }
 
   async transcribe() {
@@ -82,4 +108,5 @@ export class WhisperComponent {
       }
     });
   }
+  
 }

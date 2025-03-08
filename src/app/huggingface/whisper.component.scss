@@ -60,32 +60,53 @@
 }
 
 .transcribe-button {
-    padding: 12px 24px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    background-color: #198754; // Bootstrap success color
+    color: #fff;
+    transition: color 0.15s ease-in-out, 
+                background-color 0.15s ease-in-out,
+                border-color 0.15s ease-in-out,
+                box-shadow 0.15s ease-in-out;
 
-    &:hover:not([disabled]) {
-        background-color: #0056b3;
+    &:hover {
+        background-color: #157347;
+        border-color: #146c43;
     }
 
-    &[disabled] {
-        background-color: #cccccc;
-        cursor: not-allowed;
+    &:focus {
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
     }
 
     &:disabled {
-        cursor: not-allowed;
-        opacity: 0.7;
+        pointer-events: none;
+        opacity: 0.65;
+        background-color: #198754;
     }
 }
 
+// Add some spacing between buttons if they're next to each other
+.transcribe-button + .transcribe-button {
+    margin-left: 0.5rem;
+}
+
 .transcription-result {
-    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
     padding: 20px;
     background-color: #f8f9fa;
     border-radius: 8px;
@@ -100,4 +121,42 @@
     background-color: #fee2e2;
     border: 1px solid #fecaca;
     color: #dc2626;
+}
+
+.message {
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 15px;
+    max-width: 100%;
+    word-wrap: break-word;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px; /* Added padding for better readability */
+}
+
+.user {
+    align-self: flex-end;
+    background-color: #d1e7dd;  /* toned down neutral color */
+    color: #000;
+    padding:10px;
+    border-radius: 10px;
+}
+.transcribe-button-secondary {
+    @extend .transcribe-button;
+    background-color: #0dcaf0; // Bootstrap info color
+    margin-top: 1rem;
+    
+    &:hover {
+        background-color: #31d2f2;
+        border-color: #25cff2;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+    }
+
+    &:disabled {
+        background-color: #0dcaf0;
+        opacity: 0.65;
+    }
 }
