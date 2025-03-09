@@ -1,0 +1,39 @@
+<div class="container">
+    <h1>Convert code from Python to C#</h1>
+    <div class="code-section">
+        <div class="code-box">
+            <h2>Python code:</h2>
+            <textarea [(ngModel)]="pythonCode"></textarea>
+        </div>
+        <div class="code-box">
+            <h2>C# code:</h2>
+            <div class="output" *ngIf="convertedCode" [innerHTML]="parseMarkdown(convertedCode)"></div>
+        </div>
+    </div>
+    <div class="controls">
+        <select [(ngModel)]="selectedModel">
+            <option value="">Select a model</option>
+            <option value="gpt-4o-mini">GPT-4o-mini</option>
+            <option value="Llama-3.3-70B-Instruct">Llama</option>
+            <option value="Phi-4-mini-instruct">Phi-4-mini</option>
+        </select>
+        <button class="convert-code" 
+        (click)="convert(pythonCode, selectedModel)" 
+        [disabled]="!pythonCode || isConvertingCode"> 
+            <span *ngIf="!isConvertingCode">Convert Code</span>
+            <span *ngIf="isConvertingCode">
+                Converting Code Please wait...
+            </span>
+        </button>
+    </div>
+    <!-- <div class="result-section">
+        <div class="result-box python-result">
+            <h3>Python result:</h3>
+            <div class="output"></div>
+        </div>
+        <div class="result-box cpp-result">
+            <h3>C# result:</h3>
+            <div class="output" *ngIf="convertedCode" [innerHTML]="parseMarkdown(convertedCode)"></div>
+        </div>
+    </div> -->
+</div>

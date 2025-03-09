@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { WhisperService } from './whisper.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { inject } from '@angular/core';
 import { UserContentRequest } from '../common/models';
-import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
-import { marked } from 'marked';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MarkdownUtils } from '../utils/markdown.utils';
+
 @Component({
   selector: 'app-whisper',
   standalone: true,
@@ -25,8 +25,7 @@ export class WhisperComponent {
   isCreatingMom = false;
 
   parseMarkdown(content: string): SafeHtml {
-    const html = marked.parse(content) as string; // Ensure the result is a string
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    return MarkdownUtils.parseMarkdown(content, this.sanitizer);
   }
   
   onFileSelected(event: any) {

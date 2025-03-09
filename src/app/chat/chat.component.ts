@@ -5,10 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from './chat.service';
 import { RouterModule } from '@angular/router';
 import { marked } from 'marked';
+import { MarkdownUtils } from '../utils/markdown.utils';
+
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
@@ -20,7 +22,6 @@ export class ChatComponent {
     const history = this.chatService.getChatHistory()();
     return history.length > 1 ? history.slice(1) : [];
   });
-  
 
   constructor() {
     effect(() => {
@@ -30,8 +31,7 @@ export class ChatComponent {
   }
 
   parseMarkdown(content: string): SafeHtml {
-    const html = marked.parse(content) as string; // Ensure the result is a string
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    return MarkdownUtils.parseMarkdown(content, this.sanitizer);
   }
 
   sendMessage() {
